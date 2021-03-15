@@ -1,2 +1,2 @@
 # CycleGANsformer
-PyTorch Cycle GAN implemented with Transformers; inspired by GANsformer and CycleGAN
+PyTorch CycleGAN implemented with Transformers; inspired by GANsformer and CycleGAN
