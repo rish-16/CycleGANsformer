@@ -67,7 +67,7 @@ class MHAttention(nn.Module):
 
         return self.to_out(out)
 
-class Transformer(nn.Module):
+class Encoder(nn.Module):
     def __init__(self, dim, depth, heads, dim_head, mlp_dim, dropout=0):
         super().__init__()
         self.layers = nn.ModuleList([])
@@ -86,8 +86,75 @@ class Transformer(nn.Module):
         
         return x
 
+'''
+Generator architecture inspired by TransGAN
+from Jiang Y. et al., 2021
+'''
 class Generator(nn.Module):
-    pass
+    def __init__(self):
+        super().__init__()
+        self.input_layer = nn.Linear(1024, 8*8*1024)
+        self.stage1 = nn.ModuleList([
+            Encoder(8*8*1024, 6, 8, 8*8*1024, 8*8*1024),
+            Encoder(8*8*1024, 6, 8, 8*8*1024, 8*8*1024),
+            Encoder(8*8*1024, 6, 8, 8*8*1024, 8*8*1024),
+            Encoder(8*8*1024, 6, 8, 8*8*1024, 8*8*1024),
+            Encoder(8*8*1024, 6, 8, 8*8*1024, 8*8*1024)
+        ])
 
+        self.ps1 = nn.PixelShuffle(2)
+
+        self.stage2 = nn.ModuleList([
+            Encoder(16*16*256, 6, 8, 16*16*256, 16*16*256),
+            Encoder(16*16*256, 6, 8, 16*16*256, 16*16*256),
+            Encoder(16*16*256, 6, 8, 16*16*256, 16*16*256),
+            Encoder(16*16*256, 6, 8, 16*16*256, 16*16*256)
+        ])
+
+        self.ps2 = nn.PixelShuffle(4)
+
+        self.stage3 = nn.ModuleList([
+            Encoder(16*16*256, 6, 8, 32*32*64, 32*32*64),
+            Encoder(16*16*256, 6, 8, 32*32*64, 32*32*64)
+        ])
+
+        self.out = nn.Linear(32*32*64, 32*32*3)
+
+    def forward(self, noise):
+        x = self.input_layer(noise)
+        x = self.stage1(x)
+        x = self.ps1(x)
+        x = self.stage2(x)
+        x = self.ps2(x)
+        x = self.stage3(x)
+        out = self.out(x)
+
+        return out
+
+'''
+Discriminator architecture inspired by TransGAN
+from Jiang Y. et al., 2021
+'''
 class Discriminator(nn.Module):
-    pass
+    def __init__(self):
+        super().__init__()
+        self.input_layer = nn.Linear(32*32*3, (8*8+1)*384)
+        self.stage1 = nn.ModuleList([
+            Encoder((8*8+1)*384, 6, 8, (8*8+1)*384, (8*8+1)*384),
+            Encoder((8*8+1)*384, 6, 8, (8*8+1)*384, (8*8+1)*384),
+            Encoder((8*8+1)*384, 6, 8, (8*8+1)*384, (8*8+1)*384),
+            Encoder((8*8+1)*384, 6, 8, (8*8+1)*384, (8*8+1)*384),
+            Encoder((8*8+1)*384, 6, 8, (8*8+1)*384, (8*8+1)*384),
+            Encoder((8*8+1)*384, 6, 8, (8*8+1)*384, (8*8+1)*384),
+            Encoder((8*8+1)*384, 6, 8, (8*8+1)*384, (8*8+1)*384)
+        ])
+        self.fc1 = nn.Linear((8*8+1)*384, 1*384)
+        self.out = nn.Linear(1*384, 1) # classification head
+
+    def forward(self, img):
+        x = self.input_layer(img)
+        x = self.stage1(x)
+        x = self.fc1(x)
+        pred = self.out(1)
+
+        return pred
