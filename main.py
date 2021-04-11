@@ -15,7 +15,7 @@ from cyclegansformer import Discriminator, Generator
 # print (model)
 # print (pred.shape)
 
-img_ch = 4
+img_ch = 3
 img_size = 256
 x = torch.randn((2, img_ch, img_size, img_size))
 gen = Generator(img_ch, n_res=9)

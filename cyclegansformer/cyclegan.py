@@ -1,8 +1,9 @@
+import torch, os
 import numpy as np
-import torch
-import torch.nn.functional as F
-from torch import nn, einsum
-from torch.optim import Adam
+from torch import nn
+from torch.utils.data import DataLoader, Dataset
+from torchvision import transforms
+from PIL import Image
 
 class Block(nn.Module):
     def __init__(self, in_channels, out_channels, stride):
@@ -99,6 +100,35 @@ class Discriminator(nn.Module):
         x = torch.sigmoid(x)
         return self.model(x)
 
-class DataLoader(nn.Module):
-    def __init__(self):
+class ImageDatasetLoader(Dataset):
+    def __init__(self, root_x, root_y, transform=None):
         super().__init__()
+        self.root_x = root_x
+        self.root_y = root_y
+        self.transform = transform
+
+        self.x_imgs = os.listdir(root_x)
+        self.y_imgs = os.listdir(root_y)
+        self.ds_len = max(len(self.x_imgs), len(self.y_imgs))
+        self.x_len = len(self.x_imgs)
+        self.y_len = len(self.y_imgs)
+
+    def __len__(self):
+        return self.ds_len
+    
+    def __getitem__(self, index):
+        x_img = self.x_imgs[index % self.x_len]
+        y_img = self.y_imgs[index % self.y_len]
+
+        x_path = os.path.join(self.root_x, x_img)
+        y_path = os.path.join(self.root_y, y_img)
+
+        x_img = np.array(Image.open(x_path).convert("RGB"))
+        y_img = np.array(Image.open(y_path).convert("RGB"))
+
+        if self.transform:
+            augmentation = self.tranform(img=x_img, image0=x_img)
+            x_img = augmentation["image"]
+            y_img = augmentation["image0"]
+
+        return x_img, y_img
