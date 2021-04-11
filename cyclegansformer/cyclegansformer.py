@@ -5,7 +5,7 @@ import torch.nn as nn
 from torch.optim import Adam
 import itertools
 
-from cyclegansformer.models import Generator, Discriminator
+from cyclegansformer.models import TGenerator, TDiscriminator
 from cyclegansformer.utils import LRDecay, ReplayBuffer, weights_init
 
 CUTOUT_PROB = 0.3
@@ -16,10 +16,10 @@ DECAY_EP = 100
 
 class CycleGANsformer(nn.Module):
     def __init__(self):
-        self.gen_X2Y = Generator()
-        self.gen_Y2X = Generator()        
-        self.disc_X = Discriminator()
-        self.disc_Y = Discriminator()
+        self.gen_X2Y = TGenerator()
+        self.gen_Y2X = TGenerator()        
+        self.disc_X = TDiscriminator()
+        self.disc_Y = TDiscriminator()
 
         # custom initialise weights
         self.gen_X2Y.apply(weights_init)

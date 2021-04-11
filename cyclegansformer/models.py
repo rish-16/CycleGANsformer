@@ -90,7 +90,7 @@ class Encoder(nn.Module):
 Generator architecture inspired by TransGAN
 from Jiang Y. et al., 2021
 '''
-class Generator(nn.Module):
+class TGenerator(nn.Module):
     def __init__(self):
         super().__init__()
         self.input_layer = nn.Linear(1024, 8*8*1024)
@@ -135,7 +135,7 @@ class Generator(nn.Module):
 Discriminator architecture inspired by TransGAN
 from Jiang Y. et al., 2021
 '''
-class Discriminator(nn.Module):
+class TDiscriminator(nn.Module):
     def __init__(self):
         super().__init__()
         self.input_layer = nn.Linear(32*32*3, (8*8+1)*384)

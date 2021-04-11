@@ -1,2 +1,3 @@
 from cyclegansformer.cyclegansformer import CycleGANsformer
-from cyclegansformer.models import Generator, Discriminator
+from cyclegansformer.models import TGenerator, TDiscriminator
+from cyclegansformer.cyclegan import Generator, Discriminator
