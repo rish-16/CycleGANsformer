@@ -1,37 +1,73 @@
-## Welcome to GitHub Pages
+# CycleGANsformer
+Unpaired Image-to-Image Translation using Transformer-based GANs.
 
-You can use the [editor on GitHub](https://github.com/rish-16/CycleGANsformer/edit/main/docs/index.md) to maintain and preview the content for your website in Markdown files.
+### About
+This is an independent research project to build a Convolution-free GAN using Transformers for unpaired image-to-image translation between two domains (eg: horse and zebra, painting and photograph, seasons, etc.). It's fully implemented with `pytorch` and `torchvision`, and was inspired by the GANsformer, TransGAN, and CycleGAN papers.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+### Usage [WIP]
+I've prepared a `CycleGANsformer` wrapper over the entire model. You can install it via `pip` like so:
 
-### Markdown
-
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+```bash
+$ pip install pytorch-cyclegansformer
 ```
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+You can use the wrapper like so:
 
-### Jekyll Themes
+```python
+import torch
+from cyclegansformer import CycleGANsformer
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/rish-16/CycleGANsformer/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+x = torch.rand(1, 256, 256, 3) # your input image
+cgf = CycleGANsformer()
 
-### Support or Contact
+output_img = cgf(x) # can be viewed using matplotlib
+```
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+### Training [WIP]
+You can even train your own CycleGANsformer from scratch using the provided `ImageDatasetLoader`. Here, `path_to_x` and `path_to_y` represent the canonical filepaths to your training dataset comprising of two disjoint sets of images from two domains (eg: horses and zebras). Ensure you have the following directory structure:
+
+```
+my_image_dataset/
+    |- train/
+        |- HORSES
+            |- horse_1.jpg
+            |- horse_2.jpg
+            |- ...
+            |- horse_n.jpg
+        |- ZEBRAS
+            |- zebra_1.jpg
+            |- zebra_2.jpg
+            |- ...
+            |- zebra_m.jpg
+    |- test/
+        |- HORSES
+            |- horse_1.jpg
+            |- horse_2.jpg
+            |- ...
+            |- horse_n.jpg
+        |- ZEBRAS
+            |- zebra_1.jpg
+            |- zebra_2.jpg
+            |- ...
+            |- zebra_m.jpg
+```
+
+> Here, `n` is the number of horse images (X) and `m` is the number of zebra images (Y). 
+
+Once ready, you can start the training process (ideally on some acceleration hardware) like so:
+
+```python
+import torch
+from cyclegansformer import CycleGANsformer, ImageDatasetLoader
+
+img_ds = ImageDatasetLoader(path_to_x, path_to_y)
+cgf = CycleGANsformer()
+
+cgf.fit(img_ds) # proceeds to train – ideally use GPU, not CPU
+```
+
+### Credits
+Credits to Aladdin Persson for the CycleGAN tutorial found [here](https://www.youtube.com/watch?v=4LktBHGCNfw), to Phil Wang for his implementation of the [Vision Transformer](https://github.com/lucidrains/vit-pytorch/blob/main/vit_pytorch/vit.py) by Dosovitskiy et al., and [TransGAN](https://arxiv.org/abs/2102.07074) by Jiang et al.
+
+### License
+[MIT](https://github.com/rish-16/CycleGANsformer/blob/rish-dev/LICENSE)
