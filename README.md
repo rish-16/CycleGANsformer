@@ -1,5 +1,5 @@
 # CycleGANsformer
-Image-to-Image Translation using Transformer-based GANs.
+Unpaired Image-to-Image Translation using Transformer-based GANs.
 
 ### About
 This is an independent research project to build a Convolution-free GAN using Transformers for unpaired image-to-image translation between two domains (eg: horse and zebra, painting and photograph, seasons, etc.). It's fully implemented with `pytorch` and `torchvision`, and was inspired by the GANsformer, TransGAN, and CycleGAN papers.
