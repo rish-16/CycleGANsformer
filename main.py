@@ -4,20 +4,9 @@ import torch.nn.functional as F
 from torch import nn
 
 # from cyclegansformer import CycleGANsformer 
-from cyclegansformer import Discriminator, Generator
+from cyclegansformer import Discriminator, Generator, CycleGAN, ImageDatasetLoader
 
-# cgf = CycleGANsformer()
-# cgf.train()
+idl = ImageDatasetLoader("./dataset/train/HORSES", "./dataset/train/ZEBRAS")
 
-# x = torch.randn((5, 3, 256, 256))
-# model = Discriminator(in_channels=3)
-# pred = model(x)
-# print (model)
-# print (pred.shape)
-
-img_ch = 3
-img_size = 256
-x = torch.randn((2, img_ch, img_size, img_size))
-gen = Generator(img_ch, n_res=9)
-print (gen)
-print (gen(x).shape)
+cg = CycleGAN()
+cg.fit(idl)
