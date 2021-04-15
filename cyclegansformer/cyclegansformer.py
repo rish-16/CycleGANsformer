@@ -97,5 +97,5 @@ class CycleGANsformer(nn.Module):
         for epoch in range(epochs):
             self._train_fn(loader, G_scaler, D_scaler)
 
-    def forward(self, noise):
-        pass
+    def forward(self, x):
+        return self.genX2Y(x) # get generated image
