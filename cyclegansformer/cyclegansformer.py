@@ -89,8 +89,8 @@ class CycleGANsformer(nn.Module):
             gscaler.step(opt_gen)
             gscaler.update()
 
-    def fit(self, dataset, epochs=200):
-        loader = DataLoader(dataset, batch_size=1, shuffle=True, num_workers=4, pin_memory=True)
+    def fit(self, dataset, epochs=200, bsize=1):
+        loader = DataLoader(dataset, batch_size=bsize, shuffle=True, num_workers=4, pin_memory=True)
         G_scaler = torch.cuda.amp.GradScaler()
         D_scaler = torch.cuda.amp.GradScaler()
 
