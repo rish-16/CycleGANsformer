@@ -38,7 +38,11 @@ class FeedForward(nn.Module):
 
     def forward(self, x):
         return self.ff(x)
-    
+
+"""
+Adapted from the Vision Transformer implementation by Phil Wang 
+(https://github.com/lucidrains/vit-pytorch/)
+"""
 class MHAttention(nn.Module):
     def __init__(self, dim, heads=8, dim_head=64, dropout=0):
         super().__init__()
