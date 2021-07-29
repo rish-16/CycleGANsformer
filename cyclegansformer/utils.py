@@ -204,4 +204,4 @@ class ImageDatasetLoader(Dataset):
         x_img = augmentations["image"]
         y_img = augmentations["image0"]
 
-        return x_img, y_img        
+        return x_img, y_img
